@@ -2,7 +2,6 @@
 description:https://leetcode.com/problems/two-sum/description/
 sample solution:https://leetcode.com/problems/two-sum/solutions/2361743/python-simple-solution-o-n-time-o-n-space/
 """
-
 """
 my slolution
 """
