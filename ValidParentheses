@@ -1,0 +1,20 @@
+"""
+description:https://leetcode.com/problems/valid-parentheses/
+sample solution:
+"""
+class Solution:
+    def isValid(self, s: str) -> bool:
+        openbrackets = ['(','{','[']
+        closebrackets = [')','}',']']
+        for o, c in zip(openbrackets,closebrackets):
+            while o in s:
+                if c not in s:
+                    return False
+                else:
+                    inl = s.rfind(o)
+                    inr = s.find(c)
+                    if inl > inr:
+                        return False
+                    s = s[0:inl] + s[inl+1:inr] + s[inr+1::]
+                    if len(s) == 0:
+                        return True
