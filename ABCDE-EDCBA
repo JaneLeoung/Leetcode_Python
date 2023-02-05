@@ -1,0 +1,33 @@
+"""
+print out : Alphabetically ascending order
+ABCDE
+ABCED
+.
+.
+.
+EDCAB
+EDCBA
+"""
+nTa = {
+  '1':'A',
+  '2':'B',
+  '3':'C',
+  '4':'D',
+  '5':'E',
+}
+finalist = []
+nbs = nTa.keys()
+for i in range(12345, 54322):
+    item = str(i)
+    s = ''
+    for nb in nbs:
+        if nb not in item:
+            break;
+        s += 'a'
+    lent = len(s)
+    if lent == 5:
+        a = ''
+        for n in item:
+            a += nTa[n]
+        print(a)
+
