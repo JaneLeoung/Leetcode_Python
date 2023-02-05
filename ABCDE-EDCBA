@@ -15,17 +15,15 @@ nTa = {
   '4':'D',
   '5':'E',
 }
-finalist = []
 nbs = nTa.keys()
 for i in range(12345, 54322):
     item = str(i)
-    s = ''
+    c = 0
     for nb in nbs:
         if nb not in item:
             break;
-        s += 'a'
-    lent = len(s)
-    if lent == 5:
+        c += 1
+    if c == 5:
         a = ''
         for n in item:
             a += nTa[n]
