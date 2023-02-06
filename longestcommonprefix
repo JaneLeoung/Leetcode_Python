@@ -1,0 +1,26 @@
+"""
+longest common prefix
+https://leetcode.com/problems/longest-common-prefix/description/
+Input: strs = ["flower","flow","flight"]
+Output: "fl"
+"""
+strs = ["flower","flow","flight"]
+class Solution:
+    def longestCommonPrefix(self, strs):
+        pref = ''
+        minlen = len(min(strs,key=len))
+        for c in range(0,minlen):
+            a = []
+            for i in range(0,len(strs)):
+                a.append(strs[i][0])
+                strs[i] = strs[i][1::]
+            if len(set(a)) > 1:
+                return pref
+            pref += a[0]
+        return pref
+
+
+solut = Solution  
+pre = solut.longestCommonPrefix(solut,strs)
+print(pre)
+        
