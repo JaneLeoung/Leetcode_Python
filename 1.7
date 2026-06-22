@@ -1,0 +1,64 @@
+class Solution:
+    def topThree(self, strengths):
+        """
+        strengths: list of player strengths
+        return: [champion, runner_up, third_place]
+        """
+
+        players = []
+
+        for i in range(len(strengths)):
+            players.append([i, strengths[i]])
+
+        eliminated_by_round = []
+
+        while len(players) > 1:
+            winners = []
+            losers = []
+
+            for i in range(0, len(players), 2):
+                # Bye
+                if i + 1 == len(players):
+                    winners.append(players[i])
+                    continue
+
+                player1 = players[i]
+                player2 = players[i + 1]
+
+                # Compare players
+                if self.isBetter(player1, player2):
+                    winners.append(player1)
+                    losers.append(player2)
+                else:
+                    winners.append(player2)
+                    losers.append(player1)
+
+            eliminated_by_round.append(losers)
+            players = winners
+
+        champion = players[0][0]
+
+        # Final loser
+        runner_up = eliminated_by_round[-1][0][0]
+
+        # Best semi-final loser
+        third_player = self.getBest(eliminated_by_round[-2])
+
+        return [champion, runner_up, third_player[0]]
+
+    def isBetter(self, player1, player2):
+        # Compare strength, then id
+        if player1[1] != player2[1]:
+            return player1[1] > player2[1]
+
+        return player1[0] < player2[0]
+
+    def getBest(self, players):
+        # Get best player
+        best = players[0]
+
+        for player in players[1:]:
+            if self.isBetter(player, best):
+                best = player
+
+        return best
