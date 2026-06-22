@@ -1,0 +1,55 @@
+class Solution:
+    def topThreePlayers(self, scores):
+        """
+        scores: M x N matrix
+        return: top 3 player ids
+        """
+
+        if not scores or not scores[0]:
+            return [-1]
+
+        judge_count = len(scores)
+        player_count = len(scores[0])
+
+        if judge_count < 3 or judge_count > 10:
+            return [-1]
+
+        if player_count < 3 or player_count > 100:
+            return [-1]
+
+        players = []
+
+        for player in range(player_count):
+            total = 0
+            freq = [0] * 11
+
+            for judge in range(judge_count):
+                score = scores[judge][player]
+
+                # Check score
+                if score < 1 or score > 10:
+                    return [-1]
+
+                total += score
+                freq[score] += 1
+
+            # Save player info
+            players.append((player + 1, total, freq))
+
+        # Sort players
+        players.sort(key=lambda x: (
+            -x[1],
+            -x[2][10],
+            -x[2][9],
+            -x[2][8],
+            -x[2][7],
+            -x[2][6],
+            -x[2][5],
+            -x[2][4],
+            -x[2][3],
+            -x[2][2],
+            -x[2][1],
+            x[0]
+        ))
+
+        return [players[0][0], players[1][0], players[2][0]]
