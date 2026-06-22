@@ -1,64 +1,55 @@
 class Solution:
-    def topThree(self, strengths):
+    def maxActiveArea(self, grid):
         """
-        strengths: list of player strengths
-        return: [champion, runner_up, third_place]
+        grid: 2D list
+        return: max active area
         """
 
-        players = []
+        if not grid or not grid[0]:
+            return 0
 
-        for i in range(len(strengths)):
-            players.append([i, strengths[i]])
+        rows = len(grid)
+        cols = len(grid[0])
+        visited = set()
+        max_area = 0
 
-        eliminated_by_round = []
+        for r in range(rows):
+            for c in range(cols):
+                if (r, c) not in visited:
+                    area = self.bfs(grid, r, c, visited)
+                    max_area = max(max_area, area)
 
-        while len(players) > 1:
-            winners = []
-            losers = []
+        return max_area
 
-            for i in range(0, len(players), 2):
-                # Bye
-                if i + 1 == len(players):
-                    winners.append(players[i])
+    def bfs(self, grid, start_r, start_c, visited):
+        rows = len(grid)
+        cols = len(grid[0])
+
+        queue = [(start_r, start_c)]
+        visited.add((start_r, start_c))
+
+        area = 0
+        directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+
+        while queue:
+            r, c = queue.pop(0)
+            area += 1
+
+            for dr, dc in directions:
+                nr = r + dr
+                nc = c + dc
+
+                # Check boundary
+                if nr < 0 or nr >= rows or nc < 0 or nc >= cols:
                     continue
 
-                player1 = players[i]
-                player2 = players[i + 1]
+                # Check visited
+                if (nr, nc) in visited:
+                    continue
 
-                # Compare players
-                if self.isBetter(player1, player2):
-                    winners.append(player1)
-                    losers.append(player2)
-                else:
-                    winners.append(player2)
-                    losers.append(player1)
+                # Check value difference
+                if abs(grid[nr][nc] - grid[r][c]) <= 1:
+                    visited.add((nr, nc))
+                    queue.append((nr, nc))
 
-            eliminated_by_round.append(losers)
-            players = winners
-
-        champion = players[0][0]
-
-        # Final loser
-        runner_up = eliminated_by_round[-1][0][0]
-
-        # Best semi-final loser
-        third_player = self.getBest(eliminated_by_round[-2])
-
-        return [champion, runner_up, third_player[0]]
-
-    def isBetter(self, player1, player2):
-        # Compare strength, then id
-        if player1[1] != player2[1]:
-            return player1[1] > player2[1]
-
-        return player1[0] < player2[0]
-
-    def getBest(self, players):
-        # Get best player
-        best = players[0]
-
-        for player in players[1:]:
-            if self.isBetter(player, best):
-                best = player
-
-        return best
+        return area
