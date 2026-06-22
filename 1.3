@@ -1,0 +1,48 @@
+from datetime import datetime, timedelta
+
+class Solution:
+    def queryRecords(self, start_query, end_query, records):
+        """
+        start_query: query start time, string
+        end_query: query end time, string
+        records: [[start, end, value], ...]
+        return: list of [time, value]
+        """
+
+        fmt = "%Y%m%d%H%M"
+
+        # Parse query time
+        startQ = datetime.strptime(start_query, fmt)
+        endQ = datetime.strptime(end_query, fmt)
+
+        result = {}
+
+        for s, e, k in records:
+            # Parse record time
+            s_time = datetime.strptime(s, fmt)
+            e_time = datetime.strptime(e, fmt)
+
+            # No overlap
+            if e_time < startQ or s_time > endQ:
+                continue
+
+            # Get overlap range
+            real_start = max(s_time, startQ)
+            real_end = min(e_time, endQ)
+
+            # Fill every minute
+            t = real_start
+            while t <= real_end:
+                result[t.strftime(fmt)] = k
+                t += timedelta(minutes=1)
+
+        # No result
+        if not result:
+            return [["-1"]]
+
+        # Sort by time
+        ans = []
+        for time in sorted(result.keys()):
+            ans.append([time, result[time]])
+
+        return ans
