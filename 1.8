@@ -1,0 +1,30 @@
+import heapq
+
+class Solution:
+    def minProcessingTime(self, m, times):
+        """
+        m: number of production lines
+        times: job processing times
+        return: total processing time
+        """
+
+        # Sort jobs by time
+        times.sort()
+
+        # Enough lines
+        if m >= len(times):
+            return max(times)
+
+        heap = []
+
+        # Start first m jobs
+        for i in range(m):
+            heapq.heappush(heap, times[i])
+
+        # Assign remaining jobs
+        for i in range(m, len(times)):
+            earliest = heapq.heappop(heap)
+            heapq.heappush(heap, earliest + times[i])
+
+        # Last finish time
+        return max(heap)
