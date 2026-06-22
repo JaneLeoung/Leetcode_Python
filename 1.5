@@ -1,0 +1,45 @@
+class Solution:
+    def countWithout101(self, left, right):
+        """
+        left: start of range
+        right: end of range
+        return: count of numbers without '101'
+        """
+
+        return self.countUpTo(right) - self.countUpTo(left - 1)
+
+    def countUpTo(self, num):
+        if num < 0:
+            return 0
+
+        bits = bin(num)[2:]
+        memo = {}
+
+        def dfs(index, last_two, tight):
+            # All bits checked
+            if index == len(bits):
+                return 1
+
+            key = (index, last_two, tight)
+            if key in memo:
+                return memo[key]
+
+            # Get upper bit
+            limit = int(bits[index]) if tight else 1
+            total = 0
+
+            for bit in range(limit + 1):
+                # Check 101
+                if last_two == 2 and bit == 1:
+                    continue
+
+                # Update last two bits
+                new_last_two = ((last_two << 1) | bit) & 3
+                new_tight = tight and bit == limit
+
+                total += dfs(index + 1, new_last_two, new_tight)
+
+            memo[key] = total
+            return total
+
+        return dfs(0, 0, True)
