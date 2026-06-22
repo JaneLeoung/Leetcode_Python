@@ -1,0 +1,34 @@
+from collections import defaultdict
+import heapq
+
+class Solution:
+    def rankShooters(self, player_ids, scores):
+        """
+        player_ids: list of player IDs
+        scores: list of scores
+        return: ranked player IDs
+        """
+
+        top_scores = defaultdict(list)
+
+        for i in range(len(player_ids)):
+            player = player_ids[i]
+            score = scores[i]
+
+            # Keep top 3 scores
+            heapq.heappush(top_scores[player], score)
+
+            if len(top_scores[player]) > 3:
+                heapq.heappop(top_scores[player])
+
+        ranking = []
+
+        for player, heap in top_scores.items():
+            # Need at least 3 scores
+            if len(heap) == 3:
+                ranking.append((player, sum(heap)))
+
+        # Sort by total score, then player ID
+        ranking.sort(key=lambda x: (-x[1], -x[0]))
+
+        return [player for player, _ in ranking]
