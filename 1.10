@@ -1,0 +1,53 @@
+from collections import defaultdict
+
+class Solution:
+    def checkAttendance(self, records):
+        """
+        records: list of record strings
+        return: abnormal records
+        """
+
+        user_records = defaultdict(list)
+        abnormal = set()
+        result = []
+
+        for record in records:
+            parts = record.split(",")
+
+            user_id = parts[0]
+            clock_time = int(parts[1])
+            clock_distance = int(parts[2])
+            device_id = parts[3]
+            register_device_id = parts[4]
+
+            # Check device
+            if device_id != register_device_id:
+                self.addRecord(record, abnormal, result)
+
+            # Check same user records
+            for old_record in user_records[user_id]:
+                old_parts = old_record.split(",")
+
+                old_time = int(old_parts[1])
+                old_distance = int(old_parts[2])
+
+                time_diff = abs(clock_time - old_time)
+                distance_diff = abs(clock_distance - old_distance)
+
+                if time_diff < 60 and distance_diff > 5:
+                    self.addRecord(old_record, abnormal, result)
+                    self.addRecord(record, abnormal, result)
+
+            # Save current record
+            user_records[user_id].append(record)
+
+        if not result:
+            return ["null"]
+
+        return result
+
+    def addRecord(self, record, abnormal, result):
+        # Add once
+        if record not in abnormal:
+            abnormal.add(record)
+            result.append(record)
