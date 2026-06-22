@@ -1,0 +1,40 @@
+class Solution:
+    def createPurchaseOrders(self, requests):
+        """
+        requests: [[product_id, quantity, price, status], ...]
+        return: [[product_id, quantity, final_price], ...]
+        """
+
+        low_price_orders = {}
+        result = []
+
+        for product_id, quantity, price, status in requests:
+            # Only approved PR
+            if status != 0:
+                continue
+
+            # High price PR
+            if price > 100:
+                result.append([product_id, quantity, price])
+                continue
+
+            # Merge low price PR
+            if product_id not in low_price_orders:
+                low_price_orders[product_id] = [quantity, price]
+            else:
+                low_price_orders[product_id][0] += quantity
+
+        for product_id, item in low_price_orders.items():
+            quantity = item[0]
+            price = item[1]
+
+            # Apply discount
+            if price < 100 and quantity >= 100:
+                price = (price * 9 + 9) // 10
+
+            result.append([product_id, quantity, price])
+
+        # Sort result
+        result.sort(key=lambda x: (x[0], -x[1]))
+
+        return result
