@@ -1,0 +1,30 @@
+class Solution:
+    def encodeInteger(self, num):
+        """
+        num: non-negative integer
+        return: encoded hex string
+        """
+
+        result = []
+
+        while True:
+            # Take low 7 bits
+            byte = num & 0x7F
+            num >>= 7
+
+            # Mark next byte
+            if num > 0:
+                byte |= 0x80
+
+            result.append(byte)
+
+            # Finish encoding
+            if num == 0:
+                break
+
+        # Convert to hex
+        return "".join(self.toHex(byte) for byte in result)
+
+    def toHex(self, byte):
+        # Format as 2-digit hex
+        return format(byte, "02X")
