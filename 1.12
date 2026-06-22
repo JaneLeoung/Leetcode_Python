@@ -1,0 +1,49 @@
+class Solution:
+    def topThreePlayers(self, scores):
+        """
+        scores: M x N score matrix
+        return: top 3 player ids, or [-1]
+        """
+
+        if not scores or not scores[0]:
+            return [-1]
+
+        judge_count = len(scores)
+        player_count = len(scores[0])
+
+        if judge_count < 3 or judge_count > 10:
+            return [-1]
+
+        if player_count < 3 or player_count > 100:
+            return [-1]
+
+        players = []
+
+        for player_id in range(1, player_count + 1):
+            total = 0
+            score_count = [0] * 11
+
+            for judge in range(judge_count):
+                score = scores[judge][player_id - 1]
+
+                # Check score
+                if score < 1 or score > 10:
+                    return [-1]
+
+                total += score
+                score_count[score] += 1
+
+            # Build sort key
+            key = [-total]
+
+            for score in range(10, 0, -1):
+                key.append(-score_count[score])
+
+            key.append(player_id)
+
+            players.append((tuple(key), player_id))
+
+        # Sort by ranking rules
+        players.sort()
+
+        return [players[0][1], players[1][1], players[2][1]]
