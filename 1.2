@@ -1,0 +1,54 @@
+class Solution:
+    def getReviewUsers(self, users, task_date):
+        """
+        users: [[name, last_rating_time, score], ...]
+        task_date: current date
+        return: list of user names
+        """
+
+        ans = []
+
+        for name, last_rating_time, score in users:
+            # Get level
+            level = self.getLevel(score)
+
+            # Get review interval
+            interval = self.getInterval(level)
+
+            # Calculate next review date
+            next_review_time = last_rating_time + interval
+
+            # Check review window
+            diff = task_date - next_review_time
+            if 0 <= diff <= 5:
+                ans.append((next_review_time, name))
+
+        # Sort by review date, then name
+        ans.sort(key=lambda x: (x[0], x[1]))
+
+        # Return names only
+        return [name for _, name in ans]
+
+    def getLevel(self, score):
+        # Score to level
+        if score <= 19:
+            return 1
+        if score <= 39:
+            return 2
+        if score <= 59:
+            return 3
+        if score <= 79:
+            return 4
+        return 5
+
+    def getInterval(self, level):
+        # Level to interval days
+        intervals = {
+            1: 36 * 30,
+            2: 12 * 30,
+            3: 8 * 30,
+            4: 6 * 30,
+            5: 3 * 30
+        }
+
+        return intervals[level]
